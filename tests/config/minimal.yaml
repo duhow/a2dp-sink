@@ -1,0 +1,14 @@
+esphome:
+  name: a2dp-minimal
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: /config/components
+    components: [a2dp, a2dp_sink, a2dp_avrcp]
+
+a2dp:
+  id: a2dp_hub

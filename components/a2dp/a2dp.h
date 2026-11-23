@@ -9,7 +9,6 @@
 #include "esphome/core/helpers.h"
 #include "esphome/core/log.h"
 #include "esphome/core/preferences.h"
-#include "esphome/components/audio/audio_transfer_buffer.h"
 #include "esphome/components/ring_buffer/ring_buffer.h"
 
 #include "freertos/FreeRTOS.h"

@@ -25,12 +25,36 @@ external_components:
 
 ## Requirements
 
-- ESPHome with ESP-IDF framework
+- ESPHome 2026.11 with the ESP-IDF framework (default framework version)
 - ESP32 with Bluetooth Classic support
 - Speaker/media pipeline configured in ESPHome
 - PSRAM is recommended for stable audio buffering
 
 The components configure the required ESP-IDF Bluetooth options for A2DP and AVRCP. If BLE components are present in the same YAML, the Bluetooth controller mode is configured for BTDM; otherwise it uses BR/EDR-only mode.
+
+## Development checks with Podman
+
+Run configuration tests and compile both a minimal hub and the complete example:
+
+```sh
+podman run --rm \
+  --entrypoint sh \
+  -v "$PWD:/config:ro,Z" \
+  -v a2dp-esphome-cache:/root/.cache:z \
+  -v a2dp-esphome-build:/build:z \
+  -w /config \
+  -e PYTHONDONTWRITEBYTECODE=1 \
+  ghcr.io/esphome/esphome:2026.11.0 tests/run.sh
+```
+
+The first build downloads the ESP-IDF toolchain. Named volumes retain downloads
+and build outputs without modifying the checkout. Tests substitute dummy Wi-Fi
+credentials for the example's secrets; no device is flashed.
+
+Compilation does not verify Bluetooth audio on hardware. Before deployment, test
+pairing, 44.1/48 kHz playback, metadata and volume, pause/resume, and
+disconnect/reconnect on a Bluetooth Classic-capable ESP32. The full example also
+requires PSRAM and the configured I2S hardware.
 
 ## Components
 

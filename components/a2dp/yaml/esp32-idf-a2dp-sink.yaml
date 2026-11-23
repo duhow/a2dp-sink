@@ -69,7 +69,7 @@ a2dp:
   auto_start: true
   auto_reconnect: true
   discoverable_duration: 3min
-  pairing_pin: 1234
+  pairing_pin: "1234"
   keep_discoverable_after_connect: true
   # Most phones negotiate A2DP/SBC at 44100 Hz — prefer it so the output chain
   # does not have to resample. Options: auto, 44100, or 48000.
@@ -139,6 +139,16 @@ text_sensor:
     name: Track Title
     type: title
 
+  - platform: a2dp
+    id: a2dp_track_artist
+    name: Track Artist
+    type: artist
+
+  - platform: a2dp
+    id: a2dp_track_album
+    name: Track Album
+    type: album
+
 sensor:
   - platform: a2dp_sink
     a2dp_sink_id: a2dp_receiver
@@ -153,16 +163,6 @@ sensor:
     name: A2DP Bit Depth
     unit_of_measurement: "bit"
     accuracy_decimals: 0
-
-  - platform: a2dp
-    id: a2dp_track_artist
-    name: Track Artist
-    type: artist
-
-  - platform: a2dp
-    id: a2dp_track_album
-    name: Track Album
-    type: album
 
 button:
   - platform: template

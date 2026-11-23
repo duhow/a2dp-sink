@@ -1,6 +1,10 @@
 from esphome import automation
 import esphome.codegen as cg
-from esphome.components.esp32 import add_idf_sdkconfig_option
+from esphome.components.esp32 import (
+    add_idf_sdkconfig_option,
+    request_bluetooth,
+    request_software_coexistence,
+)
 import esphome.config_validation as cv
 from esphome.const import CONF_ID
 from esphome.core import ID
@@ -165,6 +169,9 @@ async def a2dp_action_to_code(
 
 
 async def to_code(config: ConfigType) -> None:
+    # ESPHome reconciles network SDK options after component code generation.
+    # Request the controller and its IDF component, not just CONFIG_BT_ENABLED.
+    request_bluetooth()
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
 
@@ -186,6 +193,8 @@ async def to_code(config: ConfigType) -> None:
         cg.add(var.set_pairing_pin(config[CONF_PAIRING_PIN]))
 
     if coex := config.get(CONF_COEXISTENCE):
+        if coex[CONF_SOFTWARE_COEXISTENCE]:
+            request_software_coexistence()
         cg.add(var.set_software_coexistence(coex[CONF_SOFTWARE_COEXISTENCE]))
         cg.add(var.set_prefer_bt_while_streaming(coex[CONF_PREFER_BT_WHILE_STREAMING]))
         cg.add(var.set_prefer_bt_while_discoverable(coex[CONF_PREFER_BT_WHILE_DISCOVERABLE]))
@@ -193,6 +202,7 @@ async def to_code(config: ConfigType) -> None:
         cg.add_define("USE_SOFTWARE_COEXISTENCE")
 
     add_idf_sdkconfig_option("CONFIG_BT_ENABLED", True)
+    add_idf_sdkconfig_option("CONFIG_BT_BLUEDROID_ENABLED", True)
     add_idf_sdkconfig_option("CONFIG_BT_CLASSIC_ENABLED", True)
     add_idf_sdkconfig_option("CONFIG_BT_A2DP_ENABLE", True)
     add_idf_sdkconfig_option("CONFIG_BT_AVRC_TG_ENABLE", True)
